@@ -1,137 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="shortcut icon" type="image/ico" href="/src/assets/favicon.ico" />
+    <title>Solid App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Timer</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            transition: .8s ease;
-        }
-        body {
-            display: grid;
-            place-items: center;
-            min-height: 100svh;
-            color-scheme: dark light;
-            background-color: #111;
-            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-        }
-
-        .timeline {
-            display: flex;
-        }
-
-        .task {
-            padding-inline: 1.4rem;
-            background-color: grey;
-            box-shadow: 0 .5rem 1rem 0 #0006;
-            transition: 1s ease;
-        }
-        .task p {
-            opacity: 0;
-
-        }
-        .task:hover {
-            flex-basis: 100rem !important;
-        }
-        .task:hover p {
-            opacity: 1;
-        }
-    </style>
-    <script type="module">
-        const entry = {
-            label: "Good task",
-            description: "lorem ipsum dolor sit amet",
-            entries: [
-                {
-                    start: "17:00",
-                    end: "19:00",
-                    duration: "2hours",
-                }
-            ]
-        };
-
-
-        const get = ( sel, ctx = document ) => ctx.querySelector( sel );
-        const getAll = ( sel, ctx = document ) => ctx.querySelectorAll( sel );
-
-        getAll( '.task' ).forEach( task => {
-            const duration = task.dataset.duration;
-            const proportion = duration / 480 * 100;
-            task.style.flexBasis = proportion + '%';
-            console.log( task.style.flexBasis );
-        } )
-
-
-        function startTask() {
-            const task = getTaskInfo();
-            if (localStorage.getItem('key-day')) {
-
-            }
-        }
-
-    </script>
-</head>
-
-<body>
-    <h1>Timeline</h1>
-    <div class="timeline">
-        <div class="task" data-duration="120">
-            <h2 class="task__name">Good Task</h2>
-            <p contenteditable>lorem ipsum dolor sit amet</p>
-            <p>
-                <span>Started: 17:00</span>
-                <span>Ended: 19:00</span>
-            </p>
-            <p>Duration: 2hours</p>
-        </div>
-        <div class="task" data-duration="60">
-            <h2 class="task__name">Good Task</h2>
-            <p contenteditable>lorem ipsum dolor sit amet</p>
-            <p>
-                <span>Started: 17:00</span>
-                <span>Ended: 19:00</span>
-            </p>
-            <p>Duration: 2hours</p>
-        </div>
-        <div class="task" data-duration="15">
-            <h2 class="task__name">Good Task</h2>
-            <p contenteditable>lorem ipsum dolor sit amet</p>
-            <p>
-                <span>Started: 17:00</span>
-                <span>Ended: 19:00</span>
-            </p>
-            <p>Duration: 2hours</p>
-        </div>
-        <div class="task" data-duration="120">
-            <h2 class="task__name">Good Task</h2>
-            <p contenteditable>lorem ipsum dolor sit amet</p>
-            <p>
-                <span>Started: 17:00</span>
-                <span>Ended: 19:00</span>
-            </p>
-            <p>Duration: 2hours</p>
-        </div>
-        <div class="task" data-duration="120">
-            <h2 class="task__name">Good Task</h2>
-            <p contenteditable>lorem ipsum dolor sit amet</p>
-            <p>
-                <span>Started: 17:00</span>
-                <span>Ended: 19:00</span>
-            </p>
-            <p>Duration: 2hours</p>
-        </div>
-    </div>
-    <fieldset>
-        <legend>Next Task</legend>
-        <label>
-            <input type="text">'
-            <button data-timer>Start</button>
-        </label>
-    </fieldset>
-</body>
-
+    <script src="/src/index.tsx" type="module"></script>
+  </body>
 </html>

@@ -1,0 +1,8 @@
+.item {
+    display: flex;
+    gap: 1.5rem;
+    background-color:aquamarine;
+    border-radius: 1rem;
+    padding: 1rem;
+    margin: 0.5rem;
+}
