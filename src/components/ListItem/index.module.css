@@ -1,8 +1,61 @@
 .item {
     display: flex;
-    gap: 1.5rem;
-    background-color:aquamarine;
-    border-radius: 1rem;
+    flex-direction: column;
+    gap: 0.8rem 1.5rem;
+    background-color: var(--block);
+    background-image: linear-gradient(45deg, var(--block));
+    border-radius: var(--radius-big);
     padding: 1rem;
-    margin: 0.5rem;
+    box-shadow: 0 0.25em 0.5em hsl(0, 0%, 0%, 0.1), 0 -0.25em 0.5em hsl(0, 0%, 0%, 0.1) inset,
+        0 0.25em 0.5em hsl(0, 0%, 100%, 0.2) inset;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem 2rem;
+    justify-content: space-between;
+    border-radius: var(--radius);
+}
+
+.name {
+    border-radius: 0.5em;
+    outline-offset: 2px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    transition: .3s ease;
+}
+.name:focus-visible {
+    padding: 0.3em;
+    outline: 2px solid var(--action);
+    background-color: #fff2;
+}
+
+.id {
+    border-radius: 0.4rem;
+    background-color: var(--attention-2);
+    padding: 0.3em 0.5em;
+    font-size: 0.85rem;
+
+}
+
+.duration {
+    border-radius: 0.4rem;
+    background-color: var(--attention-3);
+    padding: 0.3em 0.5em;
+    font-size: 0.85rem;
+}
+
+.description {
+    border-radius: 0.5em;
+    border: 1px dashed var(--text);
+    padding: 0.3em 1em;
+    outline-offset: 2px;
+    transition: .3s ease;
+}
+
+.description:focus-visible {
+    padding: 0.3em;
+    outline: 2px solid var(--action);
+    background-color: #fff2;
 }

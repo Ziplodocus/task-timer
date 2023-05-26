@@ -1,0 +1,38 @@
+@import './scss/variables';
+@import './scss/reset';
+@import './scss/buttons';
+@import './scss/utilities';
+@import './scss/inputs';
+
+
+hgroup h1 {
+  margin-block: 0;
+}
+
+hgroup p {
+  font-size: 0.9rem;
+  font-weight: 600;
+  opacity: 0.6;
+  text-transform: uppercase;
+  margin-block: 1em 0;
+}
+
+@keyframes hue-rotation {
+  to {
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes brightness-pulse {
+  0% {
+    backdrop-filter: brightness(1);
+  }
+
+  50% {
+    backdrop-filter: brightness(0.9);
+  }
+
+  100% {
+    backdrop-filter: brightness(1);
+  }
+}

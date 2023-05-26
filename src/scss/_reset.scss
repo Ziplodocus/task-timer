@@ -1,0 +1,64 @@
+* {
+  box-sizing: content-box;
+}
+
+html, :root {
+  background-color: var(--bg);
+  font-size: 20px;
+  -webkit-fot-smoothing: antialised;
+  animation: brightness-pulse 30s linear infinite;
+
+  @media (prefers-color-scheme: dark) {
+    @include darktheme;
+  }
+}
+
+body {
+  display: grid;
+  padding: var(--spacer) var(--gutter);
+  color: var(--text);
+  font-weight: 300;
+  background-color: var(--bg);
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+main, header {
+  max-width: 90ch;
+  margin-inline: auto;
+}
+
+a {
+  color: var(--action);
+  text-decoration: none;
+  transition: all 300ms;
+  animation: hue-rotation 30s linear infinite;
+}
+
+a:nth-child(3n) {
+  animation-delay: -10s;
+}
+
+a:nth-child(3n + 1) {
+  animation-delay: -20s;
+}
+
+a:hover {
+  filter: hue-rotate(0);
+}
+
+p,
+ul,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+}

@@ -1,0 +1,33 @@
+input[type="text"],
+textarea {
+    display: inline-block;
+    font: inherit;
+    border: none;
+    border-radius: 0.45em;
+    padding: 0.4em 1em;
+    background-color: var(--input-bg);
+    cursor: pointer;
+    outline-offset: 2px;
+    transition-property: box-shadow, transform, filter;
+    transition-duration: 0.6s;
+    transition-timing-function: ease;
+    line-height: 1.2;
+    box-shadow:  0 -0.25em 0.5em hsl(0, 0%, 0%, 0.1) inset,
+        0 0.25em 0.5em hsl(0, 0%, 100%, 0.2) inset;
+    &:focus {
+        border: none;
+        outline: none;
+    }
+    &:hover {
+        box-shadow:  0 -0.3em 0.5em hsl(0, 0%, 0%, 0.2) inset,
+            0 0.3em 0.5em hsl(0, 0%, 100%, 0.2) inset;
+        transition-duration: 0.3s;
+    }
+    &:focus-visible {
+        outline: 2px solid var(--action);
+        transform: translateY(2px);
+        box-shadow:  0 -0.25em 0.5em hsl(0, 0%, 100%, 0.1) inset,
+            0 0.25em 0.5em hsl(0, 0%, 0%, 0.1) inset;
+        transition: all 50ms;
+    }
+}

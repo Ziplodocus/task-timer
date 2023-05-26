@@ -1,59 +1,56 @@
 import { Component, createSignal, For } from "solid-js";
-
+import * as Storage from "../../Storage/local";
 import styles from "./index.module.css";
 import ListItem from "../ListItem/ListItem";
+import { create, Task } from "../../Structs/Task";
 
 const List: Component = () => {
-  const [tasks, setTasks] = createSignal<Task[]>([
-    new Task("Feed Bob"),
-    new Task("Kill Bob"),
-  ]);
-  console.log(tasks());
-  const [name, setName] = createSignal("New Task");
-  const [activeTask, setActiveTask] = createSignal<Task | null>(null);
+  const list = Storage.get("tasks") ?? [];
+
+  const [tasks, setTasks] = createSignal<Task[]>(list);
+  const [name, setName] = createSignal("");
+  const [desc, setDesc] = createSignal("");
 
   const createItem = () => {
     setTasks((list) => {
-      list.push(new Task(name()));
+      list.unshift(create(name(), desc()));
       return [...list];
     });
+    Storage.set("tasks", tasks());
   };
 
-  const toggle = (task: Task) => {
-    setActiveTask(prevTask => {
-      // If the task is active then it should be paused, and there will be no running tasks.
-      if (prevTask === task) {
-        task.active = false;
-        return null;
-      }
+  const deleteItem = (task: Task) => {
+    setTasks(tasks().filter((item) => item.id != task.id));
+    Storage.set("tasks", tasks());
+  };
 
-      if (prevTask !== null) {
-        prevTask.pause();
-      }
-
-      task.active = true;
-      return task;
+  const updateItem = (task: Task) => {
+    setTasks(old => {
+      const i = old.findIndex(item => task.id === item.id);
+      old[i] = task;
+      return old;
     })
+    Storage.set('tasks', tasks());
   }
 
   return (
     <>
-      <div class="wrapper">
+      <div class={styles.inputs}>
         <input
-          oninput={(e) => setName((_) => e.currentTarget.value)}
+          class="tasklist__namer"
+          oninput={(e) => setName(e.currentTarget.value)}
           type="text"
           value={name()}
+          placeholder="Task Name"
         />
-        <button onclick={createItem}>Add Task</button>
+        <input type="text" class="tasklist__descriptor" placeholder="Description" oninput={(e) => setDesc(e.currentTarget.value)}>
+        </input>
+        <button class="button" onclick={createItem}>+</button>
       </div>
 
-      <ul class={styles.List}>
+      <ul class={styles.list}>
         <For each={tasks()}>
-          {(task, idx) => {
-            return (
-              <ListItem task={task} toggle={toggle}></ListItem>
-            );
-          }}
+          {(task) => <ListItem task={task} remove={deleteItem} update={updateItem}></ListItem>}
         </For>
       </ul>
     </>
@@ -61,25 +58,3 @@ const List: Component = () => {
 };
 
 export default List;
-
-export class Task {
-  name: string;
-  start: number;
-  end: number;
-  duration: number;
-  active: boolean;
-
-  constructor(name: string) {
-    this.active = false;
-    this.name = name;
-    this.start = Date.now();
-    this.end = Date.now();
-    this.duration = 0;
-  }
-
-  pause() {
-    this.active = false;
-    this.end = Date.now();
-    this.duration = (this.end - this.start) / 60;
-  }
-}
