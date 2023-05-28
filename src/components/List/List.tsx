@@ -2,7 +2,7 @@ import { Component, createSignal, For } from "solid-js";
 import * as Storage from "../../Storage/local";
 import styles from "./index.module.css";
 import ListItem from "../ListItem/ListItem";
-import { create, Task } from "../../Structs/Task";
+import { clone, create, Task } from "../../Structs/Task";
 
 const List: Component = () => {
   const list = Storage.get("tasks") ?? [];
@@ -19,19 +19,19 @@ const List: Component = () => {
     Storage.set("tasks", tasks());
   };
 
-  const deleteItem = (task: Task) => {
+  const deleteItem = (task:Task) => {
     setTasks(tasks().filter((item) => item.id != task.id));
     Storage.set("tasks", tasks());
   };
 
   const updateItem = (task: Task) => {
-    setTasks(old => {
-      const i = old.findIndex(item => task.id === item.id);
+    setTasks((old) => {
+      const i = old.findIndex((item) => task.id === item.id);
       old[i] = task;
       return old;
-    })
-    Storage.set('tasks', tasks());
-  }
+    });
+    Storage.set("tasks", tasks());
+  };
 
   return (
     <>
@@ -43,14 +43,27 @@ const List: Component = () => {
           value={name()}
           placeholder="Task Name"
         />
-        <input type="text" class="tasklist__descriptor" placeholder="Description" oninput={(e) => setDesc(e.currentTarget.value)}>
+        <input
+          type="text"
+          class="tasklist__descriptor"
+          placeholder="Description"
+          oninput={(e) => setDesc(e.currentTarget.value)}
+        >
         </input>
         <button class="button" onclick={createItem}>+</button>
       </div>
 
       <ul class={styles.list}>
         <For each={tasks()}>
-          {(task) => <ListItem task={task} remove={deleteItem} update={updateItem}></ListItem>}
+          {(task) => {
+            return (
+              <ListItem
+                task={task}
+                onUpdate={updateItem}
+                onRemove={deleteItem}
+              ></ListItem>
+            );
+          }}
         </For>
       </ul>
     </>

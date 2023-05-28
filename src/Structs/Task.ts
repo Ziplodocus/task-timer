@@ -3,7 +3,7 @@ import * as Storage from '../Storage/local';
 import { formatSeconds } from '../utilities/timeconversion';
 
 let id = Storage.get('maxID');
-let timers = new Map();
+export const timers = new Map();
 
 export interface Task {
     id: number;
@@ -13,32 +13,6 @@ export interface Task {
     description?: string;
     duration: number;
     active: boolean;
-}
-
-export function toggle(task: Task) {
-    task.active ? pause(task) : play(task);
-}
-
-export function pause(task: Task) {
-    if (!task.currentEntry) return console.log(`Task ${task.id} is already paused`);
-    task.active = false;
-    task.entries.push(endEntry(task.currentEntry));
-    task.currentEntry = undefined;
-    task.duration = task.entries.reduce((a, b) => a + durationInS(b), 0);
-}
-
-export function play(task: Task) {
-    if (task.currentEntry) return console.log(`Task ${task.id} is already playing`);
-    task.active = true;
-    task.currentEntry = createEntry();
-}
-
-export function getMinutes(task: Task): string {
-    return (task.duration / 60).toFixed(2);
-}
-
-export function getFormattedDuration(task: Task) {
-    return formatSeconds(task.duration);
 }
 
 export function create(name: string, description?: string): Task {
@@ -52,4 +26,31 @@ export function create(name: string, description?: string): Task {
         duration: 0,
         description
     };
+}
+
+export function pause(task: Task) {
+    if (!task.currentEntry) return console.log(`${task.name}} is already paused`);
+    task.active = false;
+
+    const completedEntry = endEntry(task.currentEntry);
+    task.entries.push(completedEntry);
+    task.currentEntry = undefined;
+
+    clearInterval(timers.get(task.id));
+    timers.delete(task.id);
+    task.duration = task.entries.reduce((a, b) => a + durationInS(b), 0);
+}
+
+export function play(task: Task) {
+    if (task.currentEntry) return console.log(`${task.name} is already started`);
+    task.active = true;
+    const timer = setInterval(() => {
+        task.duration++;
+    }, 1000);
+    timers.set(task.id, timer);
+    task.currentEntry = createEntry();
+}
+
+export function clone(task : Task) {
+    return { ...task };
 }
