@@ -1,62 +1,97 @@
-import { Component, createEffect, createRenderEffect, createSignal, onCleanup, Show } from "solid-js";
-import { mergeProps } from "solid-js";
+import {
+  Component,
+  createEffect,
+  createRenderEffect,
+  createSignal,
+  onCleanup,
+  Show,
+} from "solid-js";
+import {} from "solid-js";
+import { createStore, produce } from "solid-js/store";
 
 import styles from "./index.module.css";
-import { clone, Task, pause as pauseTask, play as playTask } from "../../Structs/Task";
+import {
+  clone,
+  pause as pauseTask,
+  play as playTask,
+  Task,
+} from "../../Structs/Task";
 import { formatSeconds } from "../../utilities/timeconversion";
 
 const ListItem: Component<
   {
     task: Task;
-    onUpdate: (task: Task) => void;
     onRemove: (task: Task) => void;
+    onUpdate: () => void;
+    onPlay: (task: Task) => void;
   }
 > = (
   props,
 ) => {
-  const [get, set] = createSignal(props.task);
+  const [task, setTask] = createStore(props.task);
 
-  createEffect(() => props.onUpdate(get()));
-  onCleanup(() => pauseTask(get()));
+  onCleanup(() => pauseTask(task));
+
+  setTask("active", false);
+  setTask("currentEntry", undefined);
 
   function toggle() {
-    get().active ? pause() : play();
+    task.active ? pause() : play();
   }
 
   function pause() {
-    const task = get();
-    pauseTask(task);
-    set(clone(task));
+    setTask(produce((task) => {
+      pauseTask(task);
+      return task;
+    }));
+    props.onUpdate();
   }
 
   function play() {
-    const task = get();
-    playTask(task);
-    set(clone(task));
+    setTask(produce((task) => {
+      playTask(task);
+      return task;
+    }));
+    props.onPlay(task);
+    props.onUpdate();
   }
 
   function updateName(e: KeyboardEvent) {
-    const el = e.target;
     if (e.key !== "Enter") return;
     e.preventDefault();
+    const el = e.currentTarget;
     if (el instanceof HTMLElement) {
-      const task = get();
-      task.name = (el.textContent ?? "");
+      setTask("name", el.textContent ?? "");
       el.blur();
-      set(clone(task));
     }
+    props.onUpdate();
   }
 
   function updateDescription(e: KeyboardEvent) {
-    const el = e.target;
     if (e.key !== "Enter") return;
     e.preventDefault();
+    const el = e.currentTarget;
     if (el instanceof HTMLElement) {
-      const task = get();
-      task.description = el.textContent ?? "";
-      set(clone(task));
+      setTask("description", el.textContent ?? "");
       el.blur();
     }
+    props.onUpdate();
+  }
+
+  function resetName(e: Event) {
+    const el = e.currentTarget;
+    if (el instanceof HTMLElement) {
+      el.textContent = task.name ?? "";
+    }
+    props.onUpdate();
+  }
+
+  function resetDescription(e: Event) {
+    const el = e.currentTarget;
+    if (el instanceof HTMLElement) {
+      el.textContent = task.description ?? "";
+    }
+    props.onUpdate();
   }
 
   return (
@@ -67,21 +102,22 @@ const ListItem: Component<
             contentEditable
             class={styles.name}
             onkeypress={updateName}
+            onblur={resetName}
           >
-            {get().name}
+            {task.name}
           </span>
 
           <div class="spaced">
             <span class={styles.duration}>
-              {formatSeconds(get().duration)}
+              {formatSeconds(task.duration)}
             </span>
-            <span class={styles.id}>ID: {get().id}</span>
+            <span class={styles.id}>ID: {task.id}</span>
             <button aria-label="Toggle active state" onclick={toggle}>
-              {get().active ? "⏸" : "⏵"}
+              {task.active ? "⏸" : "⏵"}
             </button>
             <button
               aria-label="Delete task"
-              onclick={() => props.onRemove(get())}
+              onclick={() => props.onRemove(task)}
             >
               X
             </button>
@@ -92,8 +128,9 @@ const ListItem: Component<
           class={styles.description}
           contentEditable
           onkeypress={updateDescription}
+          onblur={resetDescription}
         >
-          {get().description ?? ""}
+          {task.description ?? ""}
         </p>
       </article>
     </li>

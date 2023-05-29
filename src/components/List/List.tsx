@@ -1,36 +1,48 @@
-import { Component, createSignal, For } from "solid-js";
+import {
+  Component,
+  createEffect,
+  createRenderEffect,
+  createSignal,
+  For,
+} from "solid-js";
 import * as Storage from "../../Storage/local";
 import styles from "./index.module.css";
 import ListItem from "../ListItem/ListItem";
-import { clone, create, Task } from "../../Structs/Task";
+import { clone, create, pause, Task } from "../../Structs/Task";
+import { createStore, produce, unwrap } from "solid-js/store";
 
 const List: Component = () => {
-  const list = Storage.get("tasks") ?? [];
-
-  const [tasks, setTasks] = createSignal<Task[]>(list);
+  const list = Storage.get("tasks") ?? [create("Hehe")];
+  const [tasks, setTasks] = createStore<Task[]>(list);
   const [name, setName] = createSignal("");
   const [desc, setDesc] = createSignal("");
 
+  const updateItems = () => {
+    Storage.set("tasks", unwrap(tasks));
+  };
+
   const createItem = () => {
-    setTasks((list) => {
+    setTasks(produce((list) => {
       list.unshift(create(name(), desc()));
-      return [...list];
-    });
-    Storage.set("tasks", tasks());
+      return list;
+    }));
+    setName("");
+    setDesc("");
+    updateItems();
   };
 
-  const deleteItem = (task:Task) => {
-    setTasks(tasks().filter((item) => item.id != task.id));
-    Storage.set("tasks", tasks());
+  const deleteItem = (task: Task) => {
+    setTasks(tasks.filter((item) => item.id != task.id));
+    updateItems();
   };
 
-  const updateItem = (task: Task) => {
-    setTasks((old) => {
-      const i = old.findIndex((item) => task.id === item.id);
-      old[i] = task;
-      return old;
-    });
-    Storage.set("tasks", tasks());
+  const pauseOtherItems = (task: Task) => {
+    setTasks(produce((tasks) => {
+      tasks.filter((item) => item.id !== task.id).forEach((item) =>
+        pause(item)
+      );
+    }));
+    updateItems();
   };
 
   return (
@@ -54,14 +66,17 @@ const List: Component = () => {
       </div>
 
       <ul class={styles.list}>
-        <For each={tasks()}>
+        <For each={tasks}>
           {(task) => {
             return (
+              // @ts-ignore
               <ListItem
                 task={task}
-                onUpdate={updateItem}
+                onUpdate={updateItems}
                 onRemove={deleteItem}
-              ></ListItem>
+                onPlay={pauseOtherItems}
+              >
+              </ListItem>
             );
           }}
         </For>

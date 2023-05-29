@@ -21,7 +21,7 @@ export function create(name: string, description?: string): Task {
     return {
         id: id,
         active: false,
-        name: name || 'Task '+id,
+        name: name || 'Task ' + id,
         entries: [],
         duration: 0,
         description
@@ -29,7 +29,7 @@ export function create(name: string, description?: string): Task {
 }
 
 export function pause(task: Task) {
-    if (!task.currentEntry) return console.log(`${task.name}} is already paused`);
+    if (!task.currentEntry) return console.log(`${task.name} is already paused`);
     task.active = false;
 
     const completedEntry = endEntry(task.currentEntry);
@@ -51,6 +51,6 @@ export function play(task: Task) {
     task.currentEntry = createEntry();
 }
 
-export function clone(task : Task) {
+export function clone(task: Task) {
     return { ...task };
 }

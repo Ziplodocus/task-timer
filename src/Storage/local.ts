@@ -7,5 +7,12 @@ export function set(key: string, item: any) {
 export function get(key: string): any {
     const value = localStorage.getItem(key);
     if (value === null) return null;
-    return JSON.parse(value);
+    let obj;
+    try {
+        obj = JSON.parse(value);
+    } catch (e) {
+        console.warn('Failed to deserialize saved tasks :(');
+        obj = null;
+    }
+    return obj;
 }
