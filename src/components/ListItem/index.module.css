@@ -10,6 +10,36 @@
         0 0.25em 0.5em hsl(0, 0%, 100%, 0.2) inset;
 }
 
+.activeItem {
+    animation: hue-rotate 10s infinite linear;
+}
+
+.activeItem .duration {
+    animation: flash 2s infinite ease;
+}
+
+
+@keyframes hue-rotate {
+    25% {
+        filter: hue-rotate(20deg);
+    }
+    75% {
+        filter: hue-rotate(-20deg);
+    }
+}
+
+@keyframes flash {
+    25% {
+        filter: brightness(1.05);
+    }
+    50% {
+        filter: brightness(1);
+    }
+    75% {
+        filter: brightness(0.95);
+    }
+}
+
 .header {
     display: flex;
     align-items: center;
