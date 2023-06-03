@@ -3,6 +3,7 @@ import type { Component } from "solid-js";
 import styles from "./App.module.css";
 import ListItem from "./components/ListItem/ListItem";
 import List from "./components/List/List";
+import Calendar from "./components/Calendar/Calendar";
 
 const App: Component = () => {
   return (
@@ -14,6 +15,7 @@ const App: Component = () => {
         </hgroup>
       </header>
       <main class={styles.App}>
+        <Calendar></Calendar>
         <List></List>
       </main>
     </>

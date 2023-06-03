@@ -1,0 +1,5 @@
+.calendar {
+  min-height: 80vh;
+  border: 1px solid green;
+  border-radius: var(--radius);
+}
