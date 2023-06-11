@@ -2,7 +2,7 @@ import { Component, For } from "solid-js";
 import { createStore } from "solid-js/store";
 import * as Storage from "../../Storage/local";
 import { Task } from "../../Structs/Task";
-import styles from "./index.module.css";
+import styles from "./index.module.scss";
 
 const Calendar: Component = () => {
   const list = Storage.get("tasks") ?? [create("Hehe")];

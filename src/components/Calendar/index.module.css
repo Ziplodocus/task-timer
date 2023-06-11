@@ -1,5 +1,27 @@
 .calendar {
-  min-height: 80vh;
-  border: 1px solid green;
-  border-radius: var(--radius);
+  display: grid;
+  grid-area: 'one  min-height: 80vh;
+ border: 1p x soli border-radius: var(--radius);
+}
+
+.hours {
+  display: flex;
+  flex-directionctionmation justify-content: space-between;
+}
+
+height: 2px;
+backgr
+}
+
+tinatio & ::before {}
+
+contnettent:;
+attr() '' Hour
+
+.hour {
+  height: 2px;
+  background-color: hsl(var(--bg-hsl) / 0.2);
+  & ::before {
+    content: 'Hour'
+  }
 }
