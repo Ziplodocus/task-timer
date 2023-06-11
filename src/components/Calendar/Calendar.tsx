@@ -8,6 +8,16 @@ const Calendar: Component = () => {
   const list = Storage.get("tasks") ?? [create("Hehe")];
   const [tasks, setTasks] = createStore<Task[]>(list);
 
+
+  function getStartPosition = ;
+  function getPercentageDuration(duration: number) {
+    const timeframeStart = 60 * 8;
+    const timeframeRange = 60 * 10;
+    
+    const minuteInDay = (duration / 60) % (10 * 60);
+    const percentage = 
+  }
+
   return (
     <section class={styles.calendar}>
       <div class={styles.hours}>
@@ -17,7 +27,7 @@ const Calendar: Component = () => {
         <div class={styles.hour}></div>
         <div class={styles.hour}></div>
         <div class={styles.hour}></div>
-        <div class={styles.hour}></div>
+        <div class={styles.hour}></div> 
         <div class={styles.hour}></div>
         <div class={styles.hour}></div>
         <div class={styles.hour}></div>
@@ -30,7 +40,7 @@ const Calendar: Component = () => {
               <For each={task.entries}>
                 {entry => {
                   return (
-                    <div class={styles.entry}>
+                    <div class={styles.entry} style={{}}>
                       <span class={styles.entryName}>{task.name}</span>
                       <span class={styles.entryDuration}>{}</span>
                     </div>
