@@ -15,8 +15,8 @@ const App: Component = () => {
         </hgroup>
       </header>
       <main class={styles.App}>
-        <Calendar></Calendar>
         <List></List>
+        <Calendar></Calendar>
       </main>
     </>
   );

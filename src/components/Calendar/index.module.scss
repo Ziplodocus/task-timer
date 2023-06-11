@@ -1,0 +1,28 @@
+.calendar {
+  padding: var(--spacer-s) 5%;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--spacer-s);
+  min-height: 80vh;
+  border: 1px solid green;
+  border-radius: var(--radius);
+  margin-bottom: var(--spacer-s);
+}
+
+.hours {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hour {
+  min-height: 2px;
+  background-color: hsl(var(--bg-hsl) / 0.2);
+  &::before {
+    content: 'Hours';
+  }
+}
+
+.tasks {
+
+}

@@ -1,14 +1,14 @@
 .list {
-    list-style: none;
-    padding: 0;
-    display: grid;
-    gap: 1rem;
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+  margin-bottom: var(--spacer-s);
 }
-
 .inputs {
-    display: flex;
-    justify-content: start;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin-bottom: var(--spacer-s);
+  display: flex;
+  justify-content: start;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: var(--spacer-s);
 }
