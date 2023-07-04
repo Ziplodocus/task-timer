@@ -7,6 +7,7 @@
   border: 1px solid green;
   border-radius: var(--radius);
   margin-bottom: var(--spacer-s);
+  position: relative;
 }
 
 .hours {
@@ -19,10 +20,34 @@
   min-height: 2px;
   background-color: hsl(var(--bg-hsl) / 0.2);
   &::before {
-    content: 'Hours';
+    // content: 'Hours';
   }
 }
 
 .tasks {
+  position: relative;
+}
 
+.entry {
+  display: grid;
+  place-content: start;
+  gap: 0.1rem;
+  position: absolute;
+  min-height: 1%;
+  list-style: none;
+  background-color: var(--block);
+  border-radius: var(--radius);
+  padding: 0.1em;
+  font-size: 50%;
+  overflow: hidden;
+  font-weight:bold;
+  color: transparent;
+  transition: .3s var(--transition, ease);
+  &:hover {
+    z-index: 1;
+    font-size: 100%;
+    color: var(--text);
+    padding: 1rem;
+    min-height: 4rem;
+  }
 }
