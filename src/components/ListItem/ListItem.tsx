@@ -96,7 +96,7 @@ const ListItem: Component<
 
   return (
     <li>
-      <article class={`${styles.item} ${task.active ? styles.activeItem : ''}`}>
+      <article class={`${styles.item} ${task.active ? styles.activeItem : ''} dimensional`}>
         <div class={styles.header}>
           <span
             contentEditable

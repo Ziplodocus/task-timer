@@ -4,6 +4,9 @@
 @import './scss/utilities';
 @import './scss/inputs';
 
+header {
+  margin-bottom: var(--spacer-s);
+}
 
 hgroup h1 {
   margin-block: 0;
@@ -17,6 +20,10 @@ hgroup p {
   margin-block: 1em 0;
 }
 
+.dimensional{
+  box-shadow: 0 0.25em 0.5em hsl(0, 0%, 0%, 0.1), 0 -0.25em 0.5em hsl(0, 0%, 0%, 0.1) inset,
+        0 0.25em 0.5em hsl(0, 0%, 100%, 0.2) inset;    
+}
 @keyframes hue-rotation {
   to {
     filter: hue-rotate(360deg);

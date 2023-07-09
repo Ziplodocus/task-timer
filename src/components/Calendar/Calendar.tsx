@@ -1,4 +1,4 @@
-import { Component, createSignal, For, Index } from "solid-js";
+import { Component, createSignal, For, Index, onCleanup } from "solid-js";
 import { createStore } from "solid-js/store";
 import * as Storage from "../../Storage/local";
 import { durationInS } from "../../Structs/Entry";
@@ -10,12 +10,15 @@ import { range } from "../../utilities/range";
 
 const Calendar: Component = () => {
   const list = Storage.get("tasks") ?? [create("Hehe")];
+  const savedRangeStart = Storage.get('viewRangeStart');
+  const savedRangeEnd = Storage.get('viewRangeEnd');
+
   const [tasks, setTasks] = createStore<Task[]>(list);
 
   const stepRange = 3600;
-  const [getRangeStart, setRangeStart] = createSignal(0);
-  const [getRangeEnd, setRangeEnd] = createSignal(24);
-
+  const [getRangeStart, setRangeStart] = createSignal(savedRangeStart || 0);
+  const [getRangeEnd, setRangeEnd] = createSignal(savedRangeEnd || 24);
+  
   const getRangeSteps = () => {
     return (getRangeEnd() - getRangeStart());
   }
@@ -47,18 +50,23 @@ const Calendar: Component = () => {
       case 'max-time':
         setRangeEnd(parseInt(input.value));
         break;
-    }
-  }
+    }    
+    Storage.set('viewRangeStart', getRangeStart());
+    Storage.set('viewRangeEnd', getRangeEnd());
+   }
 
   return (
-    <>
-      <header>
+
+    <section class={`${styles.calendar} dimensional`}>
+      <header class={styles.header}>
         <h2>View</h2>
-        <label>Time Start <input name="min-time" type="number" min="0" max="23" value={getRangeStart()} oninput={onRangeUpdate} /></label>
-        <label>Time End <input name="max-time" type="number" min="1" max="24" value={getRangeEnd()} oninput={onRangeUpdate} /></label>
+        <div class="buttons">
+          <label>Time Start <input name="min-time" type="number" min="0" max="23" value={getRangeStart()} oninput={onRangeUpdate} size="2" /></label>
+          <label>Time End <input name="max-time" type="number" min="1" max="24" value={getRangeEnd()} oninput={onRangeUpdate} size="2" /></label>
+        </div>
       </header>
 
-      <section class={styles.calendar}>
+      <div class={styles.main}>
         <div class={styles.hours}>
           {
             range(getRangeSteps() + 1).map(i => {
@@ -77,7 +85,7 @@ const Calendar: Component = () => {
                 <For each={task.entries}>
                   {entry => {
                     return (
-                      <li class={styles.entry} style={{
+                      <li class={`${styles.entry} dimensional`} style={{
                         "top": `${getStartPosition(entry.start)}%`,
                         "height": `${getPercentageDuration(durationInS(entry))}%`
                       }}>
@@ -91,8 +99,8 @@ const Calendar: Component = () => {
             }}
           </For>
         </ul>
-      </section>
-    </>
+      </div>
+    </section>
   )
 }
 
