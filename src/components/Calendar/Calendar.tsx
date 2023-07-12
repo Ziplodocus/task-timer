@@ -1,24 +1,26 @@
-import { Component, createSignal, For, Index, onCleanup } from "solid-js";
+import { Component, createSignal, For, Index, onCleanup, splitProps } from "solid-js";
 import { createStore } from "solid-js/store";
 import * as Storage from "../../Storage/local";
 import { durationInS } from "../../Structs/Entry";
-import { Task } from "../../Structs/Task";
+import { create, Task } from "../../Structs/Task";
 import { formatSeconds } from "../../utilities/timeconversion";
 import styles from "./index.module.scss";
 
 import { range } from "../../utilities/range";
+type CalendarProps = {
+  tasks: () => Task[]
+}
 
-const Calendar: Component = () => {
-  const list = Storage.get("tasks") ?? [create("Hehe")];
+const Calendar: Component<CalendarProps> = (props) => {  console.log(props);
+  const tasks = props.tasks();
+  
   const savedRangeStart = Storage.get('viewRangeStart');
   const savedRangeEnd = Storage.get('viewRangeEnd');
-
-  const [tasks, setTasks] = createStore<Task[]>(list);
 
   const stepRange = 3600;
   const [getRangeStart, setRangeStart] = createSignal(savedRangeStart || 0);
   const [getRangeEnd, setRangeEnd] = createSignal(savedRangeEnd || 24);
-  
+
   const getRangeSteps = () => {
     return (getRangeEnd() - getRangeStart());
   }
@@ -50,10 +52,10 @@ const Calendar: Component = () => {
       case 'max-time':
         setRangeEnd(parseInt(input.value));
         break;
-    }    
+    }
     Storage.set('viewRangeStart', getRangeStart());
     Storage.set('viewRangeEnd', getRangeEnd());
-   }
+  }
 
   return (
 
@@ -85,7 +87,7 @@ const Calendar: Component = () => {
                 <For each={task.entries}>
                   {entry => {
                     return (
-                      <li class={`${styles.entry} dimensional`} style={{
+                      <li class={`${styles.entry}`} style={{
                         "top": `${getStartPosition(entry.start)}%`,
                         "height": `${getPercentageDuration(durationInS(entry))}%`
                       }}>

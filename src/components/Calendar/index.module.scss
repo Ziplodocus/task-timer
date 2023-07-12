@@ -36,7 +36,7 @@
 .tasks {
   position: relative;
   overflow: hidden;
-}
+  cursor: crosshair;}
 
 .main {
   position: relative;
@@ -51,21 +51,23 @@
   place-content: start;
   gap: 0.1rem;
   position: absolute;
-  min-height: 2px;
+  min-height: 1px;
+  box-sizing: border-box;
   list-style: none;
   background-color: var(--action);
-  border-radius: var(--radius);
-  padding: 0.4em;
-  font-size: 70%;
+  border-radius: calc(var(--radius) * 0.4);
+  padding: 0.1em;
+  font-size: 90%;
   overflow: hidden;
   font-weight:bold;
   color: transparent;
+  border:1px solid var(--attention);
   transition: .3s var(--transition, ease);
+  transition-property: min-height, padding, color;
   &:hover {
     z-index: 1;
-    font-size: 100%;
     color: var(--text);
     padding: 1rem;
-    min-height: 3rem;
+    min-height: 4.5rem;
   }
 }
