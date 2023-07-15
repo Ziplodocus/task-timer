@@ -1,7 +1,6 @@
 import type { Component } from "solid-js";
 
 import styles from "./App.module.css";
-import ListItem from "./components/ListItem/ListItem";
 import List from "./components/List/List";
 import Calendar from "./components/Calendar/Calendar";
 import * as Storage from "./Storage/local";
@@ -11,7 +10,6 @@ const App: Component = () => {
   const tasksList = Storage.get('tasks');
   const [tasks, setTasks] = createStore(tasksList);
 
-  const getTasks = () => tasks;
   return (
     <>
       <header>
@@ -21,8 +19,8 @@ const App: Component = () => {
         </hgroup>
       </header>
       <main class={styles.App}>
-        <List></List>
-        <Calendar tasks={getTasks}></Calendar>
+        <List tasks={tasks} setTasks={setTasks}></List>
+        <Calendar tasks={tasks}></Calendar>
       </main>
     </>
   );

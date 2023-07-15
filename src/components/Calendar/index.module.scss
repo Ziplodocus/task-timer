@@ -1,5 +1,5 @@
 .calendar {
-  padding: var(--spacer-s) 5%;
+  padding: var(--spacer-s) 5% calc(var(--spacer-s) + 1rem);
   display: grid;
   grid-template-rows: auto 1fr;
   min-height: 80vh;
@@ -26,17 +26,36 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  grid-area: 1/1/-1/-1;
 }
 
 .hour {
+  position: relative;
+  font-size: 0.75rem;
   min-height: 2px;
+  line-height: 1;
+  padding-top: 0.2em;
+  height: 0;
   background-color: hsl(var(--bg-hsl) / 0.2);
+  transform: translateY(-50%);
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    border-top: 1px dashed var(--text);
+    height: 1px;
+  }
 }
 
 .tasks {
   position: relative;
   overflow: hidden;
-  cursor: crosshair;}
+  cursor: crosshair;
+  padding-left: 5ch;
+  grid-area: 1/1/-1/-1;
+}
 
 .main {
   position: relative;

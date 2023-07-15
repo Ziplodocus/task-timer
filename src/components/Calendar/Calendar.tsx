@@ -8,12 +8,12 @@ import styles from "./index.module.scss";
 
 import { range } from "../../utilities/range";
 type CalendarProps = {
-  tasks: () => Task[]
+  tasks: Task[]
 }
 
-const Calendar: Component<CalendarProps> = (props) => {  console.log(props);
-  const tasks = props.tasks();
-  
+const Calendar: Component<CalendarProps> = (props) => {
+  const tasks = props.tasks;
+
   const savedRangeStart = Storage.get('viewRangeStart');
   const savedRangeEnd = Storage.get('viewRangeEnd');
 

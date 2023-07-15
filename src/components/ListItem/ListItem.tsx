@@ -1,34 +1,27 @@
 import {
   Component,
-  createEffect,
-  createRenderEffect,
-  createSignal,
   onCleanup,
-  Show,
 } from "solid-js";
-import {} from "solid-js";
+import { } from "solid-js";
 import { createStore, produce } from "solid-js/store";
-
-import styles from "./index.module.css";
+import styles from "./index.module.scss";
 import {
-  clone,
   pause as pauseTask,
   play as playTask,
   Task,
 } from "../../Structs/Task";
 import { formatSeconds } from "../../utilities/timeconversion";
 
-const ListItem: Component<
-  {
-    task: Task;
-    onRemove: (task: Task) => void;
-    onUpdate: () => void;
-    onPlay: (task: Task) => void;
-  }
-> = (
-  props,
-) => {
+type ListItemProps = {
+  task: Task;
+  onRemove: (task: Task) => void;
+  onUpdate: () => void;
+  onPlay: (task: Task) => void;
+}
+
+const ListItem: Component<ListItemProps> = (props) => {
   const [task, setTask] = createStore(props.task);
+  const { onUpdate, onPlay, onRemove } = props;
 
   onCleanup(() => pauseTask(task));
 
@@ -44,7 +37,7 @@ const ListItem: Component<
       pauseTask(task);
       return task;
     }));
-    props.onUpdate();
+    onUpdate();
   }
 
   function play() {
@@ -52,45 +45,34 @@ const ListItem: Component<
       playTask(task);
       return task;
     }));
-    props.onPlay(task);
-    props.onUpdate();
+    onPlay(task);
+    onUpdate();
   }
 
-  function updateName(e: KeyboardEvent) {
+  function updateField(e: KeyboardEvent) {
     if (e.key !== "Enter") return;
     e.preventDefault();
     const el = e.currentTarget;
-    if (el instanceof HTMLElement) {
-      setTask("name", el.textContent ?? "");
-      el.blur();
-    }
-    props.onUpdate();
+
+    if (!(el instanceof HTMLElement)) return;
+
+    setTask(el.dataset.name, el.textContent ?? "");
+    el.blur();
+
+    onUpdate();
   }
 
-  function updateDescription(e: KeyboardEvent) {
-    if (e.key !== "Enter") return;
-    e.preventDefault();
+  function resetField(e: Event) {
     const el = e.currentTarget;
-    if (el instanceof HTMLElement) {
-      setTask("description", el.textContent ?? "");
-      el.blur();
-    }
-    props.onUpdate();
-  }
 
-  function resetName(e: Event) {
-    const el = e.currentTarget;
-    if (el instanceof HTMLElement) {
-      el.textContent = task.name ?? "";
-    }
-    props.onUpdate();
-  }
+    if (!(el instanceof HTMLElement)) return;
 
-  function resetDescription(e: Event) {
-    const el = e.currentTarget;
-    if (el instanceof HTMLElement) {
-      el.textContent = task.description ?? "";
-    }
+    const name = el?.dataset?.name;
+
+    if (!name) return;
+
+    el.textContent = task[name] ?? "";
+
     props.onUpdate();
   }
 
@@ -101,8 +83,9 @@ const ListItem: Component<
           <span
             contentEditable
             class={styles.name}
-            onkeypress={updateName}
-            onblur={resetName}
+            data-name="name"
+            onkeypress={updateField}
+            onblur={resetField}
           >
             {task.name}
           </span>
@@ -117,7 +100,7 @@ const ListItem: Component<
             </button>
             <button
               aria-label="Delete task"
-              onclick={() => props.onRemove(task)}
+              onclick={() => onRemove(task)}
             >
               X
             </button>
@@ -127,8 +110,9 @@ const ListItem: Component<
         <p
           class={styles.description}
           contentEditable
-          onkeypress={updateDescription}
-          onblur={resetDescription}
+          data-name="description"
+          onkeypress={updateField}
+          onblur={resetField}
         >
           {task.description ?? ""}
         </p>

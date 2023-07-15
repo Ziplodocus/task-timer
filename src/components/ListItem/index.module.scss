@@ -47,16 +47,13 @@
 }
 
 .name {
+    position: relative;
     border-radius: 0.5em;
     outline-offset: 2px;
     font-weight: 600;
     letter-spacing: 0.05em;
     transition: .3s ease;
-}
-.name:focus-visible {
-    padding: 0.3em;
-    outline: 2px solid var(--action);
-    background-color: #fff2;
+    box-sizing: border-box;
 }
 
 .id {
@@ -75,6 +72,7 @@
 }
 
 .description {
+    position: relative;
     border-radius: 0.5em;
     border: 1px dashed var(--text);
     padding: 0.3em 1em;
@@ -82,8 +80,35 @@
     transition: .3s ease;
 }
 
-.description:focus-visible {
-    padding: 0.3em;
-    outline: 2px solid var(--action);
-    background-color: #fff2;
+.name, .description {
+    // &::after {
+    //     content: 'Press Enter to confirm';
+    //     display: flex;
+    //     align-items: center;
+    //     font-size: 0.8rem;
+    //     font-weight: 500;
+    //     padding: 0.5em;
+    //     line-height: 1;
+    //     width: max-content;
+    //     max-width: 15ch;
+    //     border-radius: 0.5em;
+    //     position: absolute;
+    //     left: calc(100% + 0.5rem);
+    //     top: 0;
+    //     bottom: 0;
+    //     opacity: 0;
+    //     pointer-events: none;
+    //     margin: auto;
+    //     min-height: 100%;
+    //     background-color: var(--action);
+    //     transition: opacity 300ms;
+    // }
+    &:focus-visible {
+        padding: 0.3em;
+        outline: 2px solid var(--action);
+        background-color: #fff2;
+        // &::after {
+        //     opacity: 1;
+        // }
+    }
 }

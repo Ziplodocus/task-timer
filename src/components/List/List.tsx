@@ -4,16 +4,22 @@ import {
   createRenderEffect,
   createSignal,
   For,
+  splitProps,
 } from "solid-js";
 import * as Storage from "../../Storage/local";
 import styles from "./index.module.css";
 import ListItem from "../ListItem/ListItem";
 import { clone, create, pause, Task } from "../../Structs/Task";
-import { createStore, produce, unwrap } from "solid-js/store";
+import { createStore, produce, SetStoreFunction, unwrap } from "solid-js/store";
 
-const List: Component = () => {
-  const list = Storage.get("tasks") ?? [create("Hehe")];
-  const [tasks, setTasks] = createStore<Task[]>(list);
+type ListProps = {
+  tasks: Task[]
+  setTasks: SetStoreFunction<Task[]>
+}
+
+const List: Component<ListProps> = (props: ListProps) => {
+  const { tasks, setTasks } = props;
+
   const [name, setName] = createSignal("");
   const [desc, setDesc] = createSignal("");
 
@@ -52,6 +58,7 @@ const List: Component = () => {
           class="tasklist__namer"
           oninput={(e) => setName(e.currentTarget.value)}
           type="text"
+          name="name"
           value={name()}
           placeholder="Task Name"
         />
@@ -59,6 +66,8 @@ const List: Component = () => {
           type="text"
           class="tasklist__descriptor"
           placeholder="Description"
+          name="description"
+          value={desc()}
           oninput={(e) => setDesc(e.currentTarget.value)}
         >
         </input>
