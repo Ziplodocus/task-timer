@@ -38,15 +38,16 @@ const List: Component<ListProps> = (props: ListProps) => {
   };
 
   const deleteItem = (task: Task) => {
-    setTasks(tasks.filter((item) => item.id != task.id));
+    setTasks(tasks.filter((item) => item.id !== task.id));
     updateItems();
   };
 
   const pauseOtherItems = (task: Task) => {
     setTasks(produce((tasks) => {
-      tasks.filter((item) => item.id !== task.id).forEach((item) =>
+      tasks.forEach((item) => {
+        if (item.id === task.id) return;
         pause(item)
-      );
+      });
     }));
     updateItems();
   };
@@ -76,11 +77,18 @@ const List: Component<ListProps> = (props: ListProps) => {
 
       <ul class={styles.list}>
         <For each={tasks}>
-          {(task) => {
+          {(task ) => {
+            function setTask(mutator: (task: Task) => void) {
+              setTasks(theTask => task.id === theTask.id, 
+              produce(mutator)
+              )
+            }
+            
             return (
               // @ts-ignore
               <ListItem
                 task={task}
+                setTask={setTask}
                 onUpdate={updateItems}
                 onRemove={deleteItem}
                 onPlay={pauseOtherItems}

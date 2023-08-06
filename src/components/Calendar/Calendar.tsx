@@ -1,4 +1,4 @@
-import { Component, createSignal, For, Index, onCleanup, splitProps } from "solid-js";
+import { Component, createSignal, For, Show, Index, onCleanup, splitProps } from "solid-js";
 import { createStore } from "solid-js/store";
 import * as Storage from "../../Storage/local";
 import { durationInS } from "../../Structs/Entry";
@@ -43,7 +43,7 @@ const Calendar: Component<CalendarProps> = (props) => {
   }
 
   const onRangeUpdate = (e: InputEvent) => {
-    const input = e.currentTarget;
+    const input = e.currentTarget as HTMLInputElement;
     const name = input.name;
     switch (name) {
       case 'min-time':
@@ -81,22 +81,34 @@ const Calendar: Component<CalendarProps> = (props) => {
         </div>
 
         <ul class={styles.tasks}>
-          <For each={tasks}>
+                    <For each={tasks}>
             {task => {
               return (
-                <For each={task.entries}>
-                  {entry => {
-                    return (
-                      <li class={`${styles.entry}`} style={{
-                        "top": `${getStartPosition(entry.start)}%`,
-                        "height": `${getPercentageDuration(durationInS(entry))}%`
+                <>
+                  <Show when={task.currentEntry} >
+                    <li class={`${styles.entry}`} style={{
+                        "top": `${getStartPosition(task.currentEntry.start)}%`,
+                        "height": `${getPercentageDuration(durationInS(task.currentEntry))}%`
                       }}>
                         <span class={styles.entryName}>{task.name}</span>
-                        <span class={styles.entryDuration}>{formatSeconds(durationInS(entry))}</span>
-                      </li>
-                    )
-                  }}
-                </For>
+                        <span class={styles.entryDuration}>{formatSeconds(durationInS(task.currentEntry))}</span>
+                    </li>
+                  </Show>
+                  
+                  <For each={task.entries}>
+                    {entry => {
+                      return (
+                        <li class={`${styles.entry}`} style={{
+                          "top": `${getStartPosition(entry.start)}%`,
+                          "height": `${getPercentageDuration(durationInS(entry))}%`
+                        }}>
+                          <span class={styles.entryName}>{task.name}</span>
+                          <span class={styles.entryDuration}>{formatSeconds(durationInS(entry))}</span>
+                        </li>
+                      )
+                    }}
+                  </For>
+                </>
               )
             }}
           </For>

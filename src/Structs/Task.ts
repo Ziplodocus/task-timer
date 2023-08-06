@@ -1,56 +1,52 @@
-import { Entry, RunningEntry, createEntry, durationInS, endEntry } from './Entry';
+import { Entry, createEntry, durationInS } from './Entry';
 import * as Storage from '../Storage/local';
-import { formatSeconds } from '../utilities/timeconversion';
 
 let id = Storage.get('maxID');
-export const timers = new Map();
 
 export interface Task {
-    id: number;
-    name: string;
-    currentEntry?: RunningEntry;
-    entries: Entry[];
-    description?: string;
-    duration: number;
-    active: boolean;
+  id: number;
+  name: string;
+  currentEntry?: Entry;
+  entries: Entry[];
+  description?: string;
+  active: boolean;
 }
 
 export function create(name: string, description?: string): Task {
-    id++;
-    Storage.set('maxID', id);
-    return {
-        id: id,
-        active: false,
-        name: name || 'Task ' + id,
-        entries: [],
-        duration: 0,
-        description
-    };
+  id++;
+  Storage.set('maxID', id);
+  return {
+    id: id,
+    active: false,
+    name: name || 'Task ' + id,
+    entries: [],
+    description
+  };
 }
 
 export function pause(task: Task) {
-    if (!task.currentEntry) return console.log(`${task.name} is already paused`);
-    task.active = false;
-
-    const completedEntry = endEntry(task.currentEntry);
-    task.entries.push(completedEntry);
-    task.currentEntry = undefined;
-
-    clearInterval(timers.get(task.id));
-    timers.delete(task.id);
-    task.duration = task.entries.reduce((a, b) => a + durationInS(b), 0);
+  if (!task.currentEntry) return console.log(`${task.name} is already paused`);
+  task.active = false;
+  
+  task.currentEntry.end = Date.now();
+  task.entries.push(task.currentEntry);
+  task.currentEntry = undefined;
 }
 
 export function play(task: Task) {
-    if (task.currentEntry) return console.log(`${task.name} is already started`);
-    task.active = true;
-    const timer = setInterval(() => {
-        task.duration++;
-    }, 1000);
-    timers.set(task.id, timer);
-    task.currentEntry = createEntry();
+  if (task.currentEntry) return console.log(`${task.name} is already started`);
+  task.active = true;
+  task.currentEntry = createEntry();
 }
 
 export function clone(task: Task) {
-    return { ...task };
+  return { ...task };
+}
+
+
+export function getDurationInS(task: Task) {
+  const currentEntryDur = task.currentEntry ? durationInS(task.currentEntry) : 0;
+  return task.entries.reduce((a,b) => {
+    return a + durationInS(b);
+  }, 0) + currentEntryDur;
 }

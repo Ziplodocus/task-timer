@@ -2,10 +2,11 @@ import {
   Component,
   onCleanup,
 } from "solid-js";
-import { } from "solid-js";
+import {createSignal } from "solid-js";
 import { createStore, produce } from "solid-js/store";
 import styles from "./index.module.scss";
 import {
+  getDurationInS,
   pause as pauseTask,
   play as playTask,
   Task,
@@ -14,38 +15,47 @@ import { formatSeconds } from "../../utilities/timeconversion";
 
 type ListItemProps = {
   task: Task;
+  setTask: (mutator :(task: Task) => void) => void
   onRemove: (task: Task) => void;
   onUpdate: () => void;
   onPlay: (task: Task) => void;
 }
 
 const ListItem: Component<ListItemProps> = (props) => {
-  const [task, setTask] = createStore(props.task);
+  const {task, setTask} = props;
   const { onUpdate, onPlay, onRemove } = props;
 
   onCleanup(() => pauseTask(task));
 
-  setTask("active", false);
-  setTask("currentEntry", undefined);
-
+  setTask(task => {
+    task.active = false;
+    if (task.currentEntry) {
+      task.entries.push(task.currentEntry);
+      task.currentEntry = undefined;
+    }
+  })
+  
   function toggle() {
     task.active ? pause() : play();
   }
 
+  let timer:number;
+
   function pause() {
-    setTask(produce((task) => {
-      pauseTask(task);
-      return task;
-    }));
+    clearInterval(timer);
+    setTask(pauseTask);
     onUpdate();
-  }
+   }
 
   function play() {
-    setTask(produce((task) => {
-      playTask(task);
-      return task;
-    }));
+    setTask(playTask);
     onPlay(task);
+
+    if (timer) clearTimeout(timer);
+    timer = setInterval(() => {
+      setTask(task => task.currentEntry.end = Date.now());
+      onUpdate();
+    }, 1000);
     onUpdate();
   }
 
@@ -56,7 +66,10 @@ const ListItem: Component<ListItemProps> = (props) => {
 
     if (!(el instanceof HTMLElement)) return;
 
-    setTask(el.dataset.name, el.textContent ?? "");
+    setTask(task => {
+      task[el.dataset.name] = el.textContent ?? "";
+    })
+    
     el.blur();
 
     onUpdate();
@@ -73,7 +86,7 @@ const ListItem: Component<ListItemProps> = (props) => {
 
     el.textContent = task[name] ?? "";
 
-    props.onUpdate();
+    onUpdate();
   }
 
   return (
@@ -92,7 +105,7 @@ const ListItem: Component<ListItemProps> = (props) => {
 
           <div class="spaced">
             <span class={styles.duration}>
-              {formatSeconds(task.duration)}
+              {formatSeconds(getDurationInS(task))}
             </span>
             <span class={styles.id}>ID: {task.id}</span>
             <button aria-label="Toggle active state" onclick={toggle}>

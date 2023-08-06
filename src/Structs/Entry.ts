@@ -1,22 +1,12 @@
-export interface Entry extends RunningEntry {
+export interface Entry {
     start: number
     end: number
 }
 
-export interface RunningEntry {
-    start: number
-}
-
-export function createEntry() : RunningEntry {
+export function createEntry() : Entry {
     return {
         start: Date.now(),
-    }
-}
-
-export function endEntry(entry: RunningEntry): Entry {
-    return {
-        ...entry,
-        end: Date.now()
+        end: Date.now(),
     }
 }
 
