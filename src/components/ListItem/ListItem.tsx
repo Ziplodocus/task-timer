@@ -116,8 +116,8 @@ const ListItem: Component<ListItemProps> = (props) => {
             <button aria-label="Toggle active state" onclick={toggle}>
               {
                 task.active
-                ? <IconPlay />
-                : <IconPause />
+                ? <IconPause />
+                : <IconPlay />
               }
             </button>
             <button
