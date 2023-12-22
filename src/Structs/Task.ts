@@ -25,16 +25,16 @@ export function create(name: string, description?: string): Task {
 }
 
 export function pause(task: Task) {
-  if (!task.currentEntry) return console.log(`${task.name} is already paused`);
+  if (!task.currentEntry) return;
   task.active = false;
-  
+
   task.currentEntry.end = Date.now();
   task.entries.push(task.currentEntry);
   task.currentEntry = undefined;
 }
 
 export function play(task: Task) {
-  if (task.currentEntry) return console.log(`${task.name} is already started`);
+  if (task.currentEntry) return;
   task.active = true;
   task.currentEntry = createEntry();
 }

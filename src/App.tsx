@@ -7,7 +7,10 @@ import * as Storage from "./Storage/local";
 import { createStore } from "solid-js/store";
 
 const App: Component = () => {
-  const tasksList = Storage.get('tasks');
+  const tasksList = Storage.get('tasks') ?? [];
+  if (tasksList instanceof Error) {
+    console.error('The app is broken m8');
+  }
   const [tasks, setTasks] = createStore(tasksList);
 
   return (

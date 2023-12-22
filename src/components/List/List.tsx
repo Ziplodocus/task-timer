@@ -11,6 +11,7 @@ import styles from "./index.module.css";
 import ListItem from "../ListItem/ListItem";
 import { clone, create, pause, Task } from "../../Structs/Task";
 import { createStore, produce, SetStoreFunction, unwrap } from "solid-js/store";
+import IconAdd from "../../icons/IconAdd";
 
 type ListProps = {
   tasks: Task[]
@@ -72,18 +73,19 @@ const List: Component<ListProps> = (props: ListProps) => {
           oninput={(e) => setDesc(e.currentTarget.value)}
         >
         </input>
-        <button class="button" onclick={createItem}>+</button>
+        <button class="button" onclick={createItem}><IconAdd /></button>
       </div>
 
       <ul class={styles.list}>
         <For each={tasks}>
           {(task ) => {
             function setTask(mutator: (task: Task) => void) {
-              setTasks(theTask => task.id === theTask.id, 
-              produce(mutator)
+              setTasks(
+                the_task => task.id === the_task.id,
+                produce(mutator)
               )
             }
-            
+
             return (
               // @ts-ignore
               <ListItem

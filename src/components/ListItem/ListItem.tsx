@@ -12,6 +12,9 @@ import {
   Task,
 } from "../../Structs/Task";
 import { formatSeconds } from "../../utilities/timeconversion";
+import IconPlay from "../../icons/IconPlay";
+import IconPause from "../../icons/IconPause";
+import IconClose from "../../icons/IconClose";
 
 type ListItemProps = {
   task: Task;
@@ -34,15 +37,12 @@ const ListItem: Component<ListItemProps> = (props) => {
       task.currentEntry = undefined;
     }
   })
-  
+
   function toggle() {
     task.active ? pause() : play();
   }
 
-  let timer:number;
-
   function pause() {
-    clearInterval(timer);
     setTask(pauseTask);
     onUpdate();
    }
@@ -50,13 +50,18 @@ const ListItem: Component<ListItemProps> = (props) => {
   function play() {
     setTask(playTask);
     onPlay(task);
+    onUpdate();
 
-    if (timer) clearTimeout(timer);
-    timer = setInterval(() => {
-      setTask(task => task.currentEntry.end = Date.now());
+    const timer = setInterval(() => {
+      setTask(task => {
+        if (task.currentEntry) {
+          task.currentEntry.end = Date.now();
+        } else {
+          clearInterval(timer);
+        }
+      });
       onUpdate();
     }, 1000);
-    onUpdate();
   }
 
   function updateField(e: KeyboardEvent) {
@@ -69,7 +74,7 @@ const ListItem: Component<ListItemProps> = (props) => {
     setTask(task => {
       task[el.dataset.name] = el.textContent ?? "";
     })
-    
+
     el.blur();
 
     onUpdate();
@@ -109,13 +114,17 @@ const ListItem: Component<ListItemProps> = (props) => {
             </span>
             <span class={styles.id}>ID: {task.id}</span>
             <button aria-label="Toggle active state" onclick={toggle}>
-              {task.active ? "⏸" : "⏵"}
+              {
+                task.active
+                ? <IconPlay />
+                : <IconPause />
+              }
             </button>
             <button
               aria-label="Delete task"
               onclick={() => onRemove(task)}
             >
-              X
+              <IconClose />
             </button>
           </div>
         </div>

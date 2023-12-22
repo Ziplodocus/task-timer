@@ -12,7 +12,7 @@ export function get(key: string): any {
         obj = JSON.parse(value);
     } catch (e) {
         console.warn('Failed to deserialize saved tasks :(');
-        obj = null;
+        return new Error('Failed to deserialise the stored value: ' + e);
     }
     return obj;
 }
