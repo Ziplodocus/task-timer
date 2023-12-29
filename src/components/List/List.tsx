@@ -28,7 +28,8 @@ const List: Component<ListProps> = (props: ListProps) => {
     Storage.set("tasks", unwrap(tasks));
   };
 
-  const createItem = () => {
+  const createItem = (e : Event) => {
+    e.preventDefault();
     setTasks(produce((list) => {
       list.unshift(create(name(), desc()));
       return list;
@@ -38,10 +39,30 @@ const List: Component<ListProps> = (props: ListProps) => {
     updateItems();
   };
 
+  const smoothCreateItem = (e : Event) => {
+    if (document.startViewTransition) {
+      document.startViewTransition(() => {
+        createItem(e);
+      })
+    } else {
+      createItem(e);
+    }
+  }
+
   const deleteItem = (task: Task) => {
     setTasks(tasks.filter((item) => item.id !== task.id));
     updateItems();
   };
+
+  const smoothDeleteItem = (task: Task) => {
+    if (document.startViewTransition) {
+      document.startViewTransition(() => {
+        deleteItem(task);
+      })
+    } else {
+      deleteItem(task);
+    }
+  }
 
   const pauseOtherItems = (task: Task) => {
     setTasks(produce((tasks) => {
@@ -55,7 +76,7 @@ const List: Component<ListProps> = (props: ListProps) => {
 
   return (
     <>
-      <div class={styles.inputs}>
+      <form action="#" class={styles.inputs} onsubmit={smoothCreateItem}>
         <input
           class="tasklist__namer"
           oninput={(e) => setName(e.currentTarget.value)}
@@ -73,8 +94,8 @@ const List: Component<ListProps> = (props: ListProps) => {
           oninput={(e) => setDesc(e.currentTarget.value)}
         >
         </input>
-        <button class="button" onclick={createItem}><IconAdd /></button>
-      </div>
+        <button class="button"><IconAdd /></button>
+      </form>
 
       <ul class={styles.list}>
         <For each={tasks}>
@@ -92,7 +113,7 @@ const List: Component<ListProps> = (props: ListProps) => {
                 task={task}
                 setTask={setTask}
                 onUpdate={updateItems}
-                onRemove={deleteItem}
+                onRemove={smoothDeleteItem}
                 onPlay={pauseOtherItems}
               >
               </ListItem>

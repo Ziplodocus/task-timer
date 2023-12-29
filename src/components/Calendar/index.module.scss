@@ -51,7 +51,7 @@
 
 .tasks {
   position: relative;
-  overflow: hidden;
+  // overflow: hidden;
   cursor: crosshair;
   padding-left: 5ch;
   grid-area: 1/1/-1/-1;
@@ -62,7 +62,7 @@
   display: grid;
   grid-template-columns: auto 1fr;
   gap: var(--spacer-s);
-  
+
 }
 
 .entry {

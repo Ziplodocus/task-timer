@@ -1,7 +1,7 @@
 import { Component, createSignal, For, Show, Index, onCleanup, splitProps } from "solid-js";
 import { createStore } from "solid-js/store";
 import * as Storage from "../../Storage/local";
-import { durationInS } from "../../Structs/Entry";
+import { Entry, durationInS } from "../../Structs/Entry";
 import { create, Task } from "../../Structs/Task";
 import { formatSeconds } from "../../utilities/timeconversion";
 import styles from "./index.module.scss";
@@ -29,17 +29,31 @@ const Calendar: Component<CalendarProps> = (props) => {
     return getRangeSteps() * stepRange;
   }
 
-  function getStartPosition(startTimeUnix: number) {
+  function getStartSecondsRelativeToView(startTimeUnix: number) {
     const taskDate = new Date(startTimeUnix);
     const startOfDay = new Date(taskDate.getUTCFullYear(), taskDate.getUTCMonth(), taskDate.getUTCDate());
     const startSecondInDay = (taskDate.valueOf() - startOfDay.valueOf()) / 1000;
     const startSecondInRange = startSecondInDay - getRangeStart() * 3600;
+    return startSecondInRange;
+  }
+
+  function getStartPosition(startTimeUnix: number) {
+    const startSecondInRange = getStartSecondsRelativeToView(startTimeUnix);
     const startPercent = startSecondInRange / getRangeInSeconds() * 100;
     return startPercent;
   };
 
   function getPercentageDuration(durationInSeconds: number) {
     return durationInSeconds / getRangeInSeconds() * 100;
+  }
+
+  function getVisibility(task: Entry) {
+    const relativeSeconds = getStartSecondsRelativeToView(task.start);
+    if (relativeSeconds > 0 || relativeSeconds > getRangeSteps()*3600) {
+      return 'visible';
+    } else {
+      return 'hidden'
+    }
   }
 
   const onRangeUpdate = (e: InputEvent) => {
@@ -59,12 +73,16 @@ const Calendar: Component<CalendarProps> = (props) => {
 
   return (
 
-    <section class={`${styles.calendar} dimensional`}>
+    <section style={{ "view-transition-name": "Calendar" }} class={`${styles.calendar} dimensional`}>
       <header class={styles.header}>
         <h2>View</h2>
         <div class="buttons">
-          <label>Time Start <input name="min-time" type="number" min="0" max="23" value={getRangeStart()} oninput={onRangeUpdate} size="2" /></label>
-          <label>Time End <input name="max-time" type="number" min="1" max="24" value={getRangeEnd()} oninput={onRangeUpdate} size="2" /></label>
+          <label>Time Start
+            <input name="min-time" type="number" min="0" max="23" value={getRangeStart()} oninput={onRangeUpdate} size="2" />
+          </label>
+          <label>Time End
+            <input name="max-time" type="number" min="1" max="24" value={getRangeEnd()} oninput={onRangeUpdate} size="2" />
+          </label>
         </div>
       </header>
 
@@ -81,12 +99,13 @@ const Calendar: Component<CalendarProps> = (props) => {
         </div>
 
         <ul class={styles.tasks}>
-                    <For each={tasks}>
+          <For each={tasks}>
             {task => {
               return (
                 <>
                   <Show when={task.currentEntry} >
                     <li class={`${styles.entry}`} style={{
+                        "visibility": `${getVisibility(task.currentEntry)}`,
                         "top": `${getStartPosition(task.currentEntry.start)}%`,
                         "height": `${getPercentageDuration(durationInS(task.currentEntry))}%`
                       }}>
@@ -94,11 +113,12 @@ const Calendar: Component<CalendarProps> = (props) => {
                         <span class={styles.entryDuration}>{formatSeconds(durationInS(task.currentEntry))}</span>
                     </li>
                   </Show>
-                  
+
                   <For each={task.entries}>
                     {entry => {
                       return (
                         <li class={`${styles.entry}`} style={{
+                          "visibility": `${getVisibility(entry)}`,
                           "top": `${getStartPosition(entry.start)}%`,
                           "height": `${getPercentageDuration(durationInS(entry))}%`
                         }}>

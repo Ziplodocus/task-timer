@@ -46,6 +46,10 @@
     gap: 0.5rem 2rem;
     justify-content: space-between;
     border-radius: var(--radius);
+
+    @media (max-width: 500px) {
+        flex-wrap: wrap;
+    }
 }
 
 .name {

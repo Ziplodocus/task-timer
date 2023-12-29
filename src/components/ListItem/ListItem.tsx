@@ -95,7 +95,7 @@ const ListItem: Component<ListItemProps> = (props) => {
   }
 
   return (
-    <li>
+    <li style={{ "view-transition-name": `task-${task.id}`}}>
       <article class={`${styles.item} ${task.active ? styles.activeItem : ''} dimensional`}>
         <div class={styles.header}>
           <span
@@ -113,14 +113,14 @@ const ListItem: Component<ListItemProps> = (props) => {
               {formatSeconds(getDurationInS(task))}
             </span>
             <span class={styles.id}>ID: {task.id}</span>
-            <button aria-label="Toggle active state" onclick={toggle}>
+            <button class="button" aria-label="Toggle active state" onclick={toggle}>
               {
                 task.active
                 ? <IconPause />
                 : <IconPlay />
               }
             </button>
-            <button
+            <button class="button"
               aria-label="Delete task"
               onclick={() => onRemove(task)}
             >
