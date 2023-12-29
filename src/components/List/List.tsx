@@ -39,7 +39,8 @@ const List: Component<ListProps> = (props: ListProps) => {
     updateItems();
   };
 
-  const smoothCreateItem = (e : Event) => {
+  const smoothCreateItem = (e: Event) => {
+    e.preventDefault();
     if (document.startViewTransition) {
       document.startViewTransition(() => {
         createItem(e);
