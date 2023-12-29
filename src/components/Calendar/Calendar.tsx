@@ -49,7 +49,8 @@ const Calendar: Component<CalendarProps> = (props) => {
 
   function getVisibility(task: Entry) {
     const relativeSeconds = getStartSecondsRelativeToView(task.start);
-    if (relativeSeconds > 0 || relativeSeconds > getRangeSteps()*3600) {
+    console.log(relativeSeconds, getRangeSteps() * 3600);
+    if (relativeSeconds > 0 && relativeSeconds < getRangeSteps()*3600) {
       return 'visible';
     } else {
       return 'hidden'
