@@ -1,16 +1,13 @@
 import {
   Component,
-  createEffect,
-  createRenderEffect,
   createSignal,
   For,
-  splitProps,
 } from "solid-js";
 import * as Storage from "../../Storage/local";
 import styles from "./index.module.css";
 import ListItem from "../ListItem/ListItem";
-import { clone, create, pause, Task } from "../../Structs/Task";
-import { createStore, produce, SetStoreFunction, unwrap } from "solid-js/store";
+import { create, pause, Task } from "../../Structs/Task";
+import { produce, SetStoreFunction, unwrap } from "solid-js/store";
 import IconAdd from "../../icons/IconAdd";
 
 type ListProps = {
@@ -39,31 +36,10 @@ const List: Component<ListProps> = (props: ListProps) => {
     updateItems();
   };
 
-  const smoothCreateItem = (e: Event) => {
-    e.preventDefault();
-    if (document.startViewTransition) {
-      document.startViewTransition(() => {
-        createItem(e);
-      })
-    } else {
-      createItem(e);
-    }
-  }
-
   const deleteItem = (task: Task) => {
     setTasks(tasks.filter((item) => item.id !== task.id));
     updateItems();
   };
-
-  const smoothDeleteItem = (task: Task) => {
-    if (document.startViewTransition) {
-      document.startViewTransition(() => {
-        deleteItem(task);
-      })
-    } else {
-      deleteItem(task);
-    }
-  }
 
   const pauseOtherItems = (task: Task) => {
     setTasks(produce((tasks) => {
@@ -77,7 +53,7 @@ const List: Component<ListProps> = (props: ListProps) => {
 
   return (
     <>
-      <form action="#" class={styles.inputs} onsubmit={smoothCreateItem}>
+      <form action="#" class={styles.inputs} onsubmit={createItem}>
         <input
           class="tasklist__namer"
           oninput={(e) => setName(e.currentTarget.value)}
@@ -114,7 +90,7 @@ const List: Component<ListProps> = (props: ListProps) => {
                 task={task}
                 setTask={setTask}
                 onUpdate={updateItems}
-                onRemove={smoothDeleteItem}
+                onRemove={deleteItem}
                 onPlay={pauseOtherItems}
               >
               </ListItem>
